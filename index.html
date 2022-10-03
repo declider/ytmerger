@@ -126,8 +126,16 @@
                 player1.loadVideoById(url1.replace("https://www.youtube.com/watch?v=",""), 0, "highres")
                 player2.loadVideoById(url2.replace("https://www.youtube.com/watch?v=",""), 0, "medium")
 
-                player1.seekTo(0)
-                player2.seekTo(0-timeDelay)
+                if (timeDelay>0) {
+                    player1.seekTo(timeDelay)
+                    player2.seekTo(0)
+                } else if (timedelay<0) {
+                    player1.seekTo(0)
+                    player2.seekTo(0-timeDelay)
+                } else {
+                    player1.seekTo(0)
+                    player2.seekTo(0)
+                }
 
                 player1.mute()
                 player2.unMute()
