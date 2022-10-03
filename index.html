@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>VideoAudio merger</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        
+        <script src="https://www.youtube.com/iframe_api"></script>
+
+        <div id="main">
+            <label for="url1">Ссылка на видео</label>
+            <input type="text" id="url1" name="url1" value="https://www.youtube.com/watch?v=KyElxl_j4Wc">
+            
+            <label for="url2">Ссылка на аудио</label>
+            <input type="text" id="url2" name="url2" value="https://www.youtube.com/watch?v=GtL1huin9EE">
+
+            <label for="delay">Задержка</label>
+            <input type="number" id="delay" name="delay" value="0">
+
+            <button onclick="loadData()">Загрузить</button>
+        </div>
+            
+        <div>
+
+            <div id="player1"></div>
+            <div id="player2"></div>
+        </div>
+
+        <p>Автор: declider</p>
+
+        <script>
+
+            let currentTime = 0
+            let timeDelay = 0;
+            let player1, player2;
+            let url1, url2;
+
+            function onYouTubeIframeAPIReady() {
+                player1 = new YT.Player('player1', {
+                height: '480',
+                width: '854',
+                videoId: 'KyElxl_j4Wc',
+                playerVars: {
+                    rel: 0,
+                    start: 0,
+                    iv_load_policy: 3,
+                    autoplay: 0,
+                    playsinline: 1,
+                    origin: "https://www.youtube.com"
+                },
+                events: {   
+                    'onStateChange': onPlayerStateChange
+                }
+                })
+
+                player2 = new YT.Player('player2', {
+                height: '360',
+                width: '640',
+                videoId: 'GtL1huin9EE',
+                playerVars: {
+                    rel: 0,
+                    start: 0,
+                    iv_load_policy: 3,
+                    autoplay: 0,
+                    playsinline: 1,
+                    origin: "https://www.youtube.com"
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+                })
+
+                let iframeWindow = player1.getIframe().contentWindow
+
+                window.addEventListener("message", function(event) {
+                    if (event.source === iframeWindow) {
+                        let data = JSON.parse(event.data);
+
+                        if (
+                            data.event === "infoDelivery" &&
+                            data.info &&
+                            data.info.currentTime
+                        ) {
+                            
+                            let time = Math.floor(data.info.currentTime)
+
+                            if (currentTime-time > 1 || currentTime-time < -1) {
+                                player2.seekTo(data.info.currentTime-timeDelay)
+                            }
+
+                            currentTime = time
+
+                        }
+                    }
+                })
+            }
+
+            function onPlayerReady(event) {
+                player1.setVolume(0)
+                player2.setVolume(80)
+                loadData()
+            }
+
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.PLAYING) {
+                    player2.playVideo()
+                }
+
+                else if (event.data == YT.PlayerState.PAUSED) {
+                    player2.pauseVideo()
+                }
+            }
+
+            function loadData() {
+
+                player1.stopVideo()
+                player2.stopVideo()
+                
+                url1 = document.getElementById("url1").value
+                url2 = document.getElementById("url2").value
+
+                timeDelay = document.getElementById("delay").value
+
+                player1.loadVideoById(url1.replace("https://www.youtube.com/watch?v=",""), 0, "highres")
+                player2.loadVideoById(url2.replace("https://www.youtube.com/watch?v=",""), 0, "medium")
+
+                player1.seekTo(0)
+                player2.seekTo(0-timeDelay)
+
+                player1.mute()
+                player2.unMute()
+            }
+
+        </script>
+    </body>
+</html>
