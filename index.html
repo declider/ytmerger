@@ -11,13 +11,13 @@
 
         <div id="main">
             <label for="url1">Ссылка на видео</label>
-            <input type="text" id="url1" name="url1" value="https://www.youtube.com/watch?v=2KI0dVWwqqo">
+            <input type="text" id="url1" name="url1" value="https://www.youtube.com/watch?v=R62XmFD74YM">
             
             <label for="url2">Ссылка на аудио</label>
-            <input type="text" id="url2" name="url2" value="https://www.youtube.com/watch?v=u5aQFuVq474">
+            <input type="text" id="url2" name="url2" value="https://www.youtube.com/watch?v=9fWxCIi5PIw">
 
             <label for="delay">Задержка</label>
-            <input type="number" id="delay" name="delay" value="0">
+            <input type="number" id="delay" name="delay" value="-15">
 
             <button onclick="loadData()">Загрузить</button>
         </div>
@@ -41,7 +41,7 @@
                 player1 = new YT.Player('player1', {
                 height: '480',
                 width: '854',
-                videoId: '2KI0dVWwqqo',
+                videoId: 'R62XmFD74YM',
                 playerVars: {
                     rel: 0,
                     start: 0,
@@ -58,7 +58,7 @@
                 player2 = new YT.Player('player2', {
                 height: '360',
                 width: '640',
-                videoId: 'u5aQFuVq474',
+                videoId: '9fWxCIi5PIw',
                 playerVars: {
                     rel: 0,
                     start: 0,
@@ -140,6 +140,8 @@
                 player1.mute()
                 player2.unMute()
             }
+            
+            loadData()
 
         </script>
     </body>
